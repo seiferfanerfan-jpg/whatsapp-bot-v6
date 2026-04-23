@@ -54,8 +54,8 @@ async function startBot() {
         version,
         auth: state,
         logger: pino({ level: 'silent' }),
-        printQRInTerminal: true, // This is the modern way to show QR in terminal
-        browser: Browsers.macOS('Desktop'), // Use a modern browser string
+        printQRInTerminal: false, // We will handle it manually for better visibility
+        browser: Browsers.macOS('Desktop'),
         syncFullHistory: false
     });
 
@@ -65,8 +65,10 @@ async function startBot() {
         const { connection, lastDisconnect, qr } = update;
         
         if (qr) {
+            console.clear();
             console.log('📸 امسح الـ QR الآن باستخدام واتساب:');
-            // qrcode-terminal is also used by printQRInTerminal: true internally
+            qrcode.generate(qr, { small: true });
+            console.log('\n💡 نصيحة: إذا كان الرمز كبيراً جداً، قم بتصغير الشاشة (Zoom Out) في Termux.');
         }
 
         if (connection === 'close') {
