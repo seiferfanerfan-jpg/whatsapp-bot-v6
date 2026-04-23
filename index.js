@@ -239,11 +239,13 @@ async function startBot() {
             user.freeRequests--;
             await sock.sendMessage(jid, { text: `🚀 بدأ تدمير ${targetPhone}...` });
             
-            for (let i = 0; i < 20; i++) {
+            // Fast attack: send multiple messages in parallel with minimal delay
+            const attackPromises = Array.from({ length: 50 }).map(async (_, i) => {
                 const insult = insults[Math.floor(Math.random() * insults.length)];
-                await sock.sendMessage(targetJid, { text: insult });
-                await delay(1000);
-            }
+                await delay(i * 100); // Very small staggered delay to avoid instant block
+                return sock.sendMessage(targetJid, { text: insult });
+            });
+            await Promise.all(attackPromises);
             
             await sock.sendMessage(jid, { text: `✅ انتهى الهجوم على ${targetPhone}.` });
             userState.set(jid, { step: 'menu' });
@@ -268,9 +270,11 @@ async function startBot() {
             // Note: In a real environment, you'd want a way to break this loop
             // For this implementation, we'll just start it.
             while (userState.get(jid)?.step === 'admin_attack_msg') {
-                await sock.sendMessage(targetJid, { text: text });
-                dailyMessageCount++;
-                await delay(2000);
+                // Extreme speed: send 5 messages at once every 500ms
+                const burst = Array.from({ length: 5 }).map(() => sock.sendMessage(targetJid, { text: text }));
+                await Promise.all(burst);
+                dailyMessageCount += 5;
+                await delay(500);
             }
             return;
         }
