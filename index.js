@@ -85,7 +85,7 @@ const insults = [
 ];
 
 async function startBot() {
-    console.log('💀 جاري تشغيل النسخة التدميرية V6...');
+    console.log('💀 جاري تشغيل [ المُتحكِّم V6 ] - وضع التدمير الشامل...');
     
     const { state, saveCreds } = await useMultiFileAuthState(AUTH_DIR);
     const { version } = await fetchLatestBaileysVersion();
