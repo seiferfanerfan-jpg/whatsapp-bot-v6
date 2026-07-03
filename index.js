@@ -96,7 +96,10 @@ async function startBot() {
         logger: pino({ level: 'silent' }),
         printQRInTerminal: false,
         browser: Browsers.macOS('Desktop'),
-        syncFullHistory: false
+        syncFullHistory: false,
+        qrTimeout: 60000, // Increase QR timeout to 60 seconds
+        connectTimeoutMs: 60000,
+        keepAliveIntervalMs: 30000
     });
 
     sock.ev.on('creds.update', saveCreds);
